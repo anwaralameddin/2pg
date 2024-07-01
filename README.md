@@ -9,11 +9,11 @@ is limited to three games: Connect Four, Othello, and Tic Tac Toe.
 ## Usage
 
 In a <code>Python 3.11</code> environment, install the requirements
-```bash
+```
 pip install -r requirements.txt
 ```
 and run the package
-```bash
+```
 python -m two_player_games -m <model> -v <view> -a1 <agent1> [-d1 <depth1>] -a2 <agent2> [-d2 <depth2>]
 ```
 ### Supported Games
@@ -53,9 +53,8 @@ python -m two_player_games -m <model> -v <view> -a1 <agent1> [-d1 <depth1>] -a2 
 <!-- - [ ] [Transposition Table](https://en.wikipedia.org/wiki/Transposition_table) -->
 
 
-
 ### Example
 
-```bash
+```
 python -m two_player_games -m tictactoe -v pygame -a1 human -a2 maximin-naive -d2 6
 ```
