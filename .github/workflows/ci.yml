@@ -1,0 +1,32 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+      # TEMP: Disable this step until adding tests
+      - name: Run package
+        run: yes q | python -m two_player_games -m tictactoe -v hidden -a1 maximin-naive -d1 6 -a2 maximin-naive -d2 6
+      # FIXME: Enable this step after adding tests
+      # - name: Run test coverage
+      #   run: pytest --cov=. -vv
+      # TODO Seprate test from coverage
+
+# TODO Upload coverage to Codecov
+# - name: Upload coverage to Codecov
+#   uses: codecov/codecov-action@v1
+#   with:
+#     token: ${{ secrets.CODECOV_TOKEN }}

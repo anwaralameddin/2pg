@@ -1,0 +1,132 @@
+[build-system]
+# TODO specify the minimum version >= 68.2.2
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "two_player_games"
+version = "0.1.0"
+description = "A testbed for two-player game agents."
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">= 3.11"
+license = { file = "LICENSE.txt" }
+authors = [ { name = "Anwar Alameddin", email = "anwaralameddin@gmail.com" } ]
+keywords = [ "two-player", "games", "board-games", "strategy", "testbed"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Games/Entertainment :: Board Games",
+    "Topic :: Games/Entertainment :: Turn Based Strategy",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+urls = { "repository" = "https://github.com/anwaralameddin/2pg" }
+# XXX check the script is executable
+scripts = { "2pg" = "two_player_games:main" }
+dependencies = [
+    # TODO Replace with the minimum needed version
+    "numpy>= 1.26.4",
+    "scipy>= 1.11.4",
+    "pygame>= 2.5.2"
+]
+# TODO add a gui feature, which corresponds to enabling the pygame View
+# optional-dependencies = { "gui" = [ "pygame>= 2.5.2" ] }
+
+[tool.isort]
+# balanced_wrapping = true
+add_imports = 'from __future__ import annotations'
+atomic = true
+combine_star = true
+float_to_top = true
+include_trailing_comma = true
+line_length = 79
+overwrite_in_place = true
+profile = "black"
+skip_gitignore = true
+sort_reexports = true
+# FIXME These options do not seem available
+# show-files = true
+# formatter = "black"
+# allow_root = true
+
+[tool.black]
+line-length = 79
+# types_or = [ "python", "pyi" ]
+
+# [tool.autopep8]
+# aggressive = true
+# in-place = true
+# max-line-length = 79 # Default is 79
+
+[tool.pylint]
+# TODO Install a dictionary to use with pylint
+# spelling-dict = "en_GB"
+check-quote-consistency = true
+check-str-concat-over-line-jumps = true
+enable-all-extensions = true
+ignore-comments = false
+ignore-docstrings = false
+ignore-imports = false
+ignore-on-opaque-inference = false
+ignore-signatures = false
+include-naming-hint = true
+known-third-party = [ "pygame" ]
+max-line-length = 79
+verbose = true
+[tool.pylint."MESSAGES CONTROL"]
+# FIXME This is temporary. Fix the corresponding issues
+disable = "C0114,C0115,C0116,W0511,R0801,C0209,E1101"
+# C0114, # missing-module-docstring
+# C0115, # missing-class-docstring
+# C0116, # missing-function-docstring
+# W0511, # fixme
+# R0801, # Similar lines
+# C0209, # consider-using-f-string
+# E1101, # no-member
+
+
+# TODO This does not seem effective; setup.cfg is used instead
+# [tool.flake8]
+# # max-line-length = 79 # Default is 79
+# extend-ignore = [ "D100", "D101", "D102", "D103", "D104", "D105", "D107" ]
+
+[tool.mypy]
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+python_version = "3.11"
+show_absolute_path = true
+show_column_numbers = true
+show_error_code_links = true
+show_error_context = true
+show_traceback = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+# FIXME This is temporary. Fix the corresponding issues
+# strict = true
+# disallow_any_decorated = true
+# disallow_any_explicit = true
+# disallow_any_expr = true
+# disallow_any_generics = true
+# disallow_any_unimported = true
+# disallow_subclassing_any = true
+# plugins = [ "pydantic.mypy" ]
+disable_error_code = "import-untyped,override,return,attr-defined,unreachable,return-value"
+
+
+# TODO Ruff does not seem to read this configuration
+[tool.ruff.lint]
+# exit_non_zero_on_fix = true
+# fix = true
+# show_files = true

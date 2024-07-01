@@ -1,0 +1,134 @@
+default_language_version:
+  python: python3.11
+# default_stages: [commit, push]
+repos:
+  # ------------------------------------------------------------
+  # General
+  # ------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-yaml
+      - id: end-of-file-fixer
+        # - id: mixed-line-ending
+        #   args: [--fix=lf]
+      - id: trailing-whitespace
+        # - id: check-illegal-windows-names
+        # - id: check-shebang-scripts-are-executable
+  # ------------------------------------------------------------
+  # Format YAML files
+  # ------------------------------------------------------------
+  # - repo: https://github.com/google/yamlfmt
+  #   rev: v0.10.0
+  #   hooks:
+  #     - id: yamlfmt
+  # ------------------------------------------------------------
+  # Python Syntax
+  # ------------------------------------------------------------
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.16.0
+    hooks:
+      - id: pyupgrade
+        args: [--py311-plus]
+        # --keep-percent-format, --keep-runtime-typing
+  # ------------------------------------------------------------
+  # Python Linting
+  # ------------------------------------------------------------
+  # NOTE: Local hooks are used to be able to import the system Python modules
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: python -m pylint.__main__
+        language: system
+        files: \.py$
+  # - repo: https://github.com/pycqa/pylint
+  #   rev: v3.2.3
+  #   hooks:
+  #     - id: pylint
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          # - flake8-comprehensions
+          - flake8-annotations
+          - flake8-bugbear==24.4.26
+          - flake8-commas
+          - flake8-docstrings
+          - flake8-import-order
+          - flake8-pyi
+          - flake8-simplify
+          # exclude: ^src/blib2to3/
+  # NOTE: Local hooks are used to be able to import the system Python modules
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: mypy
+        require_serial: true
+        language: system
+        types: [python]
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.10.1
+  #   hooks:
+  #     - id: mypy
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.0
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix, --show-files]
+        # - id: ruff-format # conflicts with black
+  - repo: https://github.com/asottile/dead
+    rev: v1.5.2
+    hooks:
+      - id: dead
+  # ------------------------------------------------------------
+  # Python Formatting
+  # ------------------------------------------------------------
+  # It also splits the import statements into multiple lines and conflicts with
+  # isort
+  # - repo: https://github.com/asottile/reorder-python-imports
+  #   # Keep reorder-python-imports before isort
+  #   rev: v3.13.0
+  #   hooks:
+  #     - id: reorder-python-imports
+  #       args: [--py311-plus]
+  - repo: https://github.com/pycqa/isort
+    # Keep isort before black
+    rev: 5.12.0
+    hooks:
+      - id: isort
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+# - repo: https://github.com/hhatto/autopep8
+#   hooks:
+#   rev: v2.3.0
+#     - id: autopep8
+# - repo: https://github.com/asottile/add-trailing-comma
+#   rev: v3.1.0
+#   hooks:
+#     - id: add-trailing-comma
+# - repo: https://github.com/asottile/setup-cfg-fmt
+#   rev: v2.5.0
+#   hooks:
+#     - id: setup-cfg-fmt
+# ------------------------------------------------------------
+# Python Testing
+# ------------------------------------------------------------
+# FIXME Enable coverage
+# - repo: local
+#   hooks:
+#     - id: pytest-coverage
+#       name: pytest coverage
+#       entry: pytest --cov=. -vv
+#       language: system
+#       pass_filenames: false
+#       always_run: true
