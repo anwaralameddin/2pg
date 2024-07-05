@@ -12,7 +12,7 @@
   - [ ] [Monte Carlo Tree Search (MCTS)](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search)
   - [ ] RL solvers
 
-- Incorporate CPU and GPU acceleration.
+- [ ] Incorporate CPU and GPU acceleration.
 
 - [ ] Improve the command line interface. In particular, allow the user to specify the agent and depth using the same option, e.g. <code>-a1 maximin-naive 6</code> instead of <code>-a1 maximin-naive -d1 6</code>.
 
@@ -40,4 +40,5 @@
 
 ## Appearance
 
+- [ ] In the view module, aAccept functions to render pieces for different games. For example, X and O for Tic-Tac-Toe.
 - [ ] Improve logs
