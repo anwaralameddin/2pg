@@ -92,6 +92,7 @@ def main() -> None:
             AgentArg.MAXIMIN_NAIVE
             | AgentArg.MAXIMIN_DEFENSIVE
             | AgentArg.MAXIMIN_STOCHASTIC
+            | AgentArg.MAXIMIN_ALPHA_BETA_PRUNING
         ):
             first_agent = arg_first_agent.get_agent(category)(
                 arg_first_depth,
@@ -107,6 +108,7 @@ def main() -> None:
             AgentArg.MAXIMIN_NAIVE
             | AgentArg.MAXIMIN_DEFENSIVE
             | AgentArg.MAXIMIN_STOCHASTIC
+            | AgentArg.MAXIMIN_ALPHA_BETA_PRUNING
         ):
             second_agent = arg_second_agent.get_agent(category)(
                 arg_second_depth,

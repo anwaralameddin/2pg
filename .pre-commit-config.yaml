@@ -123,6 +123,14 @@ repos:
 # ------------------------------------------------------------
 # Python Testing
 # ------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest -vv --capture=no
+        language: system
+        pass_filenames: false
+        always_run: true
 # FIXME Enable coverage
 # - repo: local
 #   hooks:

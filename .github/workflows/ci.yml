@@ -20,6 +20,8 @@ jobs:
       # TEMP: Disable this step until adding tests
       - name: Run package
         run: yes q | python -m two_player_games -m tictactoe -v hidden -a1 maximin-naive -d1 6 -a2 maximin-naive -d2 6
+      - name: Run tests
+        run: pytest -vv --capture=no
       # FIXME: Enable this step after adding tests
       # - name: Run test coverage
       #   run: pytest --cov=. -vv

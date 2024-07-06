@@ -8,7 +8,6 @@
 ## Features
 
 - [ ] Implement the following agents:
-  - [ ] [Alpha-Beta Pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning)
   - [ ] [Monte Carlo Tree Search (MCTS)](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search)
   - [ ] RL solvers
 

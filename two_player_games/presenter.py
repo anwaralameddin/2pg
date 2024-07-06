@@ -18,6 +18,7 @@ class Presenter(Generic[Action, State, Change]):
     first_agent: Agent[Action, State, Change]
     second_agent: Agent[Action, State, Change]
     view: View[Action, State, Change]
+    stdin: bool = True
 
     def restart(self) -> None:
         self.model.restart()
@@ -82,7 +83,8 @@ class Presenter(Generic[Action, State, Change]):
             self.model.scores,
         )
 
-        self.menu_loop()
+        if self.stdin:
+            self.menu_loop()
 
     def menu_loop(self) -> None:
         self.view.display_menu_screen()
