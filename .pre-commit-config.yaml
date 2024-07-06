@@ -127,7 +127,7 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: pytest -vv --capture=no
+        entry: pytest -vv --capture=no --benchmark-skip
         language: system
         pass_filenames: false
         always_run: true

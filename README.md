@@ -35,7 +35,7 @@ python -m two_player_games -m <model> -v <view> -a1 <agent1> [-d1 <depth1>] -a2 
     - [X] Naive: (<code>maximin-naive</code>)
     - [X] Defensive: (<code>maximin-defensive</code>)
     - [X] Stochastic: (<code>maximin-stochastic</code>)
-    - [X] [Alpha-Beta Pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning)
+    - [X] [Alpha-Beta Pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning): (<code>maximin-alpha-beta</code>)
     - [ ] [Negamax](https://en.wikipedia.org/wiki/Negamax)
 - [ ] [Monte Carlo Tree Search (MCTS)](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search)
 <!-- TODO Consider implementing the following agents -->
