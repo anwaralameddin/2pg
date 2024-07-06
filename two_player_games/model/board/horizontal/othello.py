@@ -27,6 +27,7 @@ WHITE_MARK = MARK_SECOND
 BLACK_WON = Status.FIRST_WON
 WHITE_WON = Status.SECOND_WON
 
+# TODO Move ROW_NUM, COL_NUM to this file and refactor view to use them
 ROW_NUM = OTHELO.row_num
 COL_NUM = OTHELO.col_num
 INIT_BLACK = [
@@ -75,10 +76,6 @@ DIRECTION = dict[str, tuple[int, int]](
 # TODO pylint: disable=too-many-instance-attributes
 @dataclass
 class Othello(HorizontalBoard):
-    # Mark whether the last turn was passed without playing
-    _turn_passed: bool
-    # The number of possible flips in each direction for each action.
-    _possible_flips: dict[str, npt.NDArray[np.int8]]
 
     # TODO Avoid this repetition. This should be already covered in Model
     def __init__(self) -> None:
@@ -93,7 +90,10 @@ class Othello(HorizontalBoard):
             BLACK: len(INIT_BLACK),
             WHITE: len(INIT_WHITE),
         }
-        self._turn_passed = False
+        # Mark whether the last turn was passed without playing
+        self._turn_passed: bool = False
+        # The number of possible flips in each direction for each action.
+        self._possible_flips: dict[str, npt.NDArray[np.int8]] = {}
         self._vectorized_possible_flips_dir = np.vectorize(
             self._possible_flips_dir,
             otypes=[int],

@@ -30,7 +30,6 @@ class PlayAfterGameOver(Exception, Generic[Action]):
         return f"Attempted action after the game is over: {self.action}"
 
 
-# pylint: disable=too-many-instance-attributes
 class Model(ABC, Generic[Action, State, Change]):
     """
     An abstract class specifying the interface for a game model.
@@ -46,68 +45,23 @@ class Model(ABC, Generic[Action, State, Change]):
     def state(self, value: State) -> None:
         self._state = value
 
-    @property
-    def changes(self) -> list[Change]:
-        return self._changes
-
-    @changes.setter
-    def changes(self, value: list[Change]) -> None:
-        self._changes = value
-
-    @property
-    def turn(self) -> Turn:
-        return self._turn
-
-    @turn.setter
-    def turn(self, value: Turn) -> None:
-        self._turn = value
-
-    @property
-    def possible_actions(self) -> list[Action]:
-        """Return the possible actions for the current player."""
-        return self._possible_actions
-
-    @possible_actions.setter
-    def possible_actions(self, value: list[Action]) -> None:
-        """Set the possible actions for the current player."""
-        self._possible_actions = value
-
-    @property
-    def scores(self) -> dict[Turn, float]:
-        """Return the scores for each player."""
-        return self._scores
-
-    @scores.setter
-    def scores(self, value: dict[Turn, float]) -> None:
-        """Set the scores for each player."""
-        self._scores = value
-
-    @property
-    def status(self) -> Status:
-        """Return the game's status."""
-        return self._status
-
-    @status.setter
-    def status(self, value: Status) -> None:
-        """Set the game's status."""
-        self._status = value
-
     @abstractmethod
     def __init__(self) -> None:
-        self._turn = Turn.FIRST
-        self._status = Status.RUNNING
-        self.scores = {
+        self.turn: Turn = Turn.FIRST
+        self.status: Status = Status.RUNNING
+        self.scores: dict[Turn, float] = {
             Turn.FIRST: 0,
             Turn.SECOND: 0,
         }
+        self.changes: list[Change] = []
+        self.possible_actions: list[Action] = []
         """
         Subclasses must initialize the following attributes:
         - `self.state`
-        - `self.changes`
-        - `self._possible_actions`
         - model-specific attributes
         They also can override the following attributes:
-        - `self._scores`
+        - `self.scores`
+        - `self.changes`
         Then, they must call the following method:
         - `self._update_possible_actions()`
         """

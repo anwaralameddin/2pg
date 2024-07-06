@@ -21,8 +21,6 @@ BoardChange = tuple[int, int]
 class Board(
     Model[Action, BoardState, BoardChange],
 ):
-    _row_num: int
-    _col_num: int
 
     @abstractmethod
     def __init__(self, row_num: int, col_num: int) -> None:
@@ -31,5 +29,5 @@ class Board(
         # FIXME Avoid this repetition. This should be already covered in Model
         self.state = np.zeros((row_num, col_num), CellMark)
         self.changes = []
-        self._row_num = row_num
-        self._col_num = col_num
+        self._row_num: int = row_num
+        self._col_num: int = col_num
