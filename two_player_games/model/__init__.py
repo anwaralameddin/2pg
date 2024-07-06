@@ -30,6 +30,7 @@ class PlayAfterGameOver(Exception, Generic[Action]):
         return f"Attempted action after the game is over: {self.action}"
 
 
+# pylint: disable=too-many-instance-attributes
 class Model(ABC, Generic[Action, State, Change]):
     """
     An abstract class specifying the interface for a game model.
@@ -95,13 +96,61 @@ class Model(ABC, Generic[Action, State, Change]):
     def __init__(self) -> None:
         self._turn = Turn.FIRST
         self._status = Status.RUNNING
+        self.scores = {
+            Turn.FIRST: 0,
+            Turn.SECOND: 0,
+        }
         """
-        Subclasses should initialize the following attributes:
-        - self.state
-        - self.changes
-        - self._possible_actions
-        - self._scores
+        Subclasses must initialize the following attributes:
+        - `self.state`
+        - `self.changes`
+        - `self._possible_actions`
+        - model-specific attributes
+        They also can override the following attributes:
+        - `self._scores`
+        Then, they must call the following method:
+        - `self._update_possible_actions()`
         """
+
+    def play(self, action: Action | None) -> bool:
+        """
+        Execute the given action.
+
+        The method returns True if executed successfully; otherwise, False.
+        """
+        if action is None:
+            self.changes = []
+        elif action not in self.possible_actions:
+            return False
+        else:
+            self._update_state_and_changes(action)
+        self._update_scores(action)
+        self._update_status(action)
+        self._switch_turn()
+        self._update_possible_actions()
+        return True
+
+    @abstractmethod
+    def _update_state_and_changes(self, action: Action) -> None:
+        """Update state and changes for the given action."""
+        # No need to check for invalid actions as this method is only called
+        # for actions in self.possible_actions
+
+    @abstractmethod
+    def _update_scores(self, action: Action | None) -> None:
+        """Update scores for each player for the given action."""
+
+    @abstractmethod
+    def _update_status(self, action: Action | None) -> None:
+        """Update the status for the given action."""
+
+    def _switch_turn(self) -> None:
+        """Switch the current player."""
+        self.turn = -self.turn
+
+    @abstractmethod
+    def _update_possible_actions(self) -> None:
+        """Update the possible actions for the current player."""
 
     def restart(self) -> None:
         # FIXME Refactor board and othello to help avoid using __init__
@@ -112,29 +161,8 @@ class Model(ABC, Generic[Action, State, Change]):
         """Return the reward for the given player."""
         return self.scores[turn] - self.scores[-turn]
 
-    def switch_turn(self) -> None:
-        self.turn = -self.turn
-
     def is_over(self) -> bool:
         return self.status != Status.RUNNING
-
-    @abstractmethod
-    def update_possible_actions(self) -> None:
-        pass
-
-    @abstractmethod
-    def exec(self, action: Action | None) -> bool:
-        """
-        Execute the given action.
-
-        The method returns True if executed successfully; otherwise, False.
-
-        This entails:
-        - Updating the state and the scores
-        - Updating the status
-        - Switching the turn
-        - Updating possible actions
-        """
 
     @abstractmethod
     def peek_then_eval(

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import logging
 from functools import partial
 
 import numpy as np
+import numpy.typing as npt
 
 from two_player_games.common import MARK_EMPTY, Status, Turn
 from two_player_games.config.board.tic_tac_toe import TICTACTOE
@@ -13,12 +13,8 @@ from two_player_games.model.board.horizontal import (
     HorizontalBoardAction,
 )
 
-logger = logging.getLogger(__name__)
-
 X_TURN = Turn.FIRST
 O_TURN = Turn.SECOND
-# X_MARK = MARK_FIRST
-# O_MARK = MARK_SECOND
 X_WON = Status.FIRST_WON
 O_WON = Status.SECOND_WON
 
@@ -29,11 +25,57 @@ COL_NUM = TICTACTOE.col_num
 class TicTacToe(HorizontalBoard):
     def __init__(self) -> None:
         super().__init__(ROW_NUM, COL_NUM)
-        self.scores = {
-            X_TURN: 0,
-            O_TURN: 0,
-        }
-        self.update_possible_actions()
+        self._update_possible_actions()
+
+    def _update_state_and_changes(self, action: HorizontalBoardAction) -> None:
+        self.changes = [action]
+        self.state[action] = self.turn.value
+
+    def _update_scores(self, action: HorizontalBoardAction | None) -> None:
+        if action is None:
+            self.scores[X_TURN] = 0.5
+            self.scores[O_TURN] = 0.5
+        elif self._is_won():
+            if self.turn == X_TURN:
+                self.scores[X_TURN] = 1
+            else:
+                self.scores[O_TURN] = 1
+
+    # TODO It would be more efficient to check only lines that contain the
+    # last move
+    def _is_won(self) -> bool:
+        """Claclulate whether the executed move is a winning move."""
+        cell_mark = self.turn.value
+        # TODO Compare the performance of the following with an approach using
+        # convolutions, similar to Connect4
+        state_eq_mark: npt.NDArray[np.bool_] = self.state == cell_mark
+        vertical: bool = state_eq_mark.all(axis=0).any()
+        horizontal: bool = state_eq_mark.all(axis=1).any()
+        diagonal: bool = (np.diag(self.state) == cell_mark).all() or (
+            np.diag(self.state[:, ::-1]) == cell_mark
+        ).all()
+        return vertical or horizontal or diagonal
+
+    def _update_status(self, _action: HorizontalBoardAction | None) -> None:
+        match (self.scores[X_TURN], self.scores[O_TURN]):
+            case (1, 0):
+                self.status = X_WON
+            case (0, 1):
+                self.status = O_WON
+            case (0.5, 0.5):
+                self.status = Status.DRAW
+            case _:
+                pass
+                # self.status = Status.RUNNING
+
+    def _update_possible_actions(self) -> None:
+        # TODO update more efficiently, e.g. by removing the last move
+        self.possible_actions = [
+            (row, col)
+            for row in range(self._row_num)
+            for col in range(self._col_num)
+            if self.state[row, col] == MARK_EMPTY
+        ]
 
     # TODO Refactor: Move these repeated methods to Model
     # def deepcopy(self) -> TicTacToe:
@@ -47,58 +89,6 @@ class TicTacToe(HorizontalBoard):
     #     board.scores = self.scores.copy()
     #     board.status = self.status
     #     return board
-
-    def _update_status_and_scores(self) -> None:
-        """Update the status and the scores during execution."""
-        if self._is_winning():
-            if self.turn == X_TURN:
-                self.status = X_WON
-                self.scores[X_TURN] += 1
-            else:
-                self.status = O_WON
-                self.scores[O_TURN] += 1
-        elif not self.possible_actions:
-            self.status = Status.DRAW
-            self.scores[X_TURN] += 0.5
-            self.scores[O_TURN] += 0.5
-
-    # TODO It would be more efficient to check only lines that contain the
-    # last move
-    def _is_winning(self) -> bool:
-        """Claclulate whether the executed move is a winning move."""
-        cell_mark = self.turn.value
-        state_eq_mark = self.state == cell_mark
-        # TODO Compare the performance of the following with an approach using
-        # convolutions, similar to Connect4
-        vertical = state_eq_mark.all(axis=0).any()
-        horizontal = state_eq_mark.all(axis=1).any()
-        diagonal = (np.diag(self.state) == cell_mark).all() or (
-            np.diag(np.fliplr(self.state)) == cell_mark
-        ).all()
-        return bool(vertical or horizontal or diagonal)
-
-    def update_possible_actions(self) -> None:
-        """Update possible actions, i.e. the cells that can be played."""
-        self.possible_actions = [
-            (row, col)
-            for row in range(self._row_num)
-            for col in range(self._col_num)
-            if self.state[row, col] == MARK_EMPTY
-        ]
-
-    def exec(self, action: HorizontalBoardAction | None) -> bool:
-        # update_possible_actions() is always called before the next invocation
-        # of exec(), so we can assume that possible_actions is up-to-date.
-        # Different from Othello, action can only be none when the game is over
-        if action is not None:
-            if action not in self.possible_actions:
-                return False
-            self.changes = [action]
-            self.state[action] = self.turn.value
-        self.update_possible_actions()
-        self._update_status_and_scores()
-        self.switch_turn()
-        return True
 
     # TODO Refactor: Move these repeated methods to Model
     def peek_then_eval(
@@ -117,7 +107,7 @@ class TicTacToe(HorizontalBoard):
 
         # Execute
         if not self.is_over():
-            if not self.exec(action):
+            if not self.play(action):
                 raise InvalidAction(action, self.turn)
         else:
             # Unreachable
@@ -135,7 +125,7 @@ class TicTacToe(HorizontalBoard):
         }
         self.turn = turn
         self.status = status
-        self.update_possible_actions()
+        self._update_possible_actions()
 
         # TODO Move these assert statements to tests
         assert (

@@ -65,7 +65,7 @@ class Presenter(Generic[Action, State, Change]):
                         self.model.turn,
                         action,
                     )
-                    if not self.model.exec(action):
+                    if not self.model.play(action):
                         raise InvalidAction(action, self.model.turn)
             # TODO `cell` is board specific. Replace it with a more generic
             # property or method

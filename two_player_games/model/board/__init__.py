@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any
 
 import numpy as np
+import numpy.typing as npt
 
 from two_player_games.common import CellMark
 from two_player_games.model import Action, Model
@@ -13,7 +13,7 @@ from two_player_games.model import Action, Model
 
 
 # pylint: disable=unsubscriptable-object
-BoardState = np.ndarray[Any, Any]
+BoardState = npt.NDArray[np.int8]
 BoardChange = tuple[int, int]
 
 

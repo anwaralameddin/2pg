@@ -2,7 +2,7 @@
 
 ## Performance
 
-- [ ] <code>Maximin</code> can be simplified by replacing <code>model.peek_then_eval(action, f)</code> with <code>copy=model.deepcopy()</code>, <code>model.exec(action)</code>, <code>f(model)</code> and <code>model=copy</code>. Benchmark the performance of the two approaches.
+- [ ] <code>Maximin</code> can be simplified by replacing <code>model.peek_then_eval(action, f)</code> with <code>copy=model.deepcopy()</code>, <code>model.play(action)</code>, <code>f(model)</code> and <code>model=copy</code>. Benchmark the performance of the two approaches.
 - [ ] The models are slow, especially for a simple game like tic-tac-toe. Consider looking for more efficient algorithms.
 
 ## Features
